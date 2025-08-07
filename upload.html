@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বই আপলোড - RealBook</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/firebase-config.js" defer></script>
+    <script src="/js/main.js" defer></script>
+</head>
+<body>
+    <header>
+        <button id="backBtn">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>বই আপলোড</h1>
+    </header>
+
+    <main class="upload-container">
+        <form id="uploadForm">
+            <div class="form-group">
+                <label for="bookTitle">বইয়ের নাম</label>
+                <input type="text" id="bookTitle" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="bookAuthor">লেখক</label>
+                <input type="text" id="bookAuthor" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="bookCategory">বিষয়শ্রেণী</label>
+                <select id="bookCategory" required>
+                    <option value="madrasa">মাদ্রাসা</option>
+                    <option value="school">স্কুল</option>
+                    <option value="audio">অডিও বই</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="bookCover">কভার ছবি</label>
+                <input type="file" id="bookCover" accept="image/*" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="bookFile">বই ফাইল (PDF বা অডিও)</label>
+                <input type="file" id="bookFile" required>
+            </div>
+            
+            <button type="submit" class="upload-button">
+                <i class="fas fa-cloud-upload-alt"></i> আপলোড করুন
+            </button>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="uploadProgress"></div>
+                <span id="progressText">0%</span>
+            </div>
+        </form>
+    </main>
+</body>
+</html>
