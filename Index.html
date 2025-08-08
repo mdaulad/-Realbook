@@ -3,84 +3,1670 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RealBook - ইসলামিক লাইব্রেরি</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="manifest" href="/manifest.json">
-    <script src="/js/firebase-config.js" defer></script>
-    <script src="/js/auth.js" defer></script>
-    <script src="/js/main.js" defer></script>
+    <title>RealBook লাইব্রেরি</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans Bengali', sans-serif;
+        }
+        
+        :root {
+            --primary: #1877f2;
+            --primary-light: #e7f3ff;
+            --secondary: #42b72a;
+            --secondary-light: #e8f5e9;
+            --dark: #1c1e21;
+            --light: #f0f2f5;
+            --white: #ffffff;
+            --gray: #8a8d91;
+            --card-bg: #ffffff;
+            --header-bg: #ffffff;
+            --nav-bg: #ffffff;
+            --border: #dddfe2;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --text-primary: #050505;
+            --text-secondary: #65676b;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--text-primary);
+            padding-bottom: 60px;
+            position: relative;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .dark-mode {
+            --primary: #2d88ff;
+            --primary-light: #1e3a5f;
+            --light: #18191a;
+            --dark: #f0f2f5;
+            --card-bg: #242526;
+            --header-bg: #242526;
+            --nav-bg: #242526;
+            --border: #3e4042;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --text-primary: #e4e6eb;
+            --text-secondary: #b0b3b8;
+        }
+        
+        /* Header Styles */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: var(--header-bg);
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 3px var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), #4a00e0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .search-bar {
+            flex-grow: 1;
+            margin: 0 15px;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            background-color: var(--light);
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--text-primary);
+            transition: background-color 0.3s;
+        }
+        
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .header-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .header-icons i {
+            font-size: 20px;
+            color: var(--text-primary);
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+        }
+        
+        /* Navigation Styles */
+        .nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--nav-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid var(--border);
+            z-index: 1000;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+            background-color: var(--primary-light);
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+        
+        .nav-item span {
+            font-size: 12px;
+            transition: color 0.3s;
+        }
+        
+        /* Main Content Styles */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            transition: color 0.3s;
+        }
+        
+        /* Home Page Styles */
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .quick-link {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 1px 3px var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+        }
+        
+        .quick-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+        
+        .quick-link i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--primary);
+            transition: color 0.3s;
+        }
+        
+        .notification {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px var(--shadow);
+            display: flex;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+        }
+        
+        .notification:hover {
+            transform: translateX(5px);
+        }
+        
+        .notification i {
+            font-size: 20px;
+            color: var(--primary);
+            transition: color 0.3s;
+        }
+        
+        .notification-content h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            transition: color 0.3s;
+        }
+        
+        .notification-content p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+        
+        /* Category Page Styles */
+        .category-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .category-header i {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .book-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px var(--shadow);
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+        }
+        
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px var(--shadow);
+        }
+        
+        .book-cover {
+            width: 100%;
+            height: 150px;
+            background-color: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .book-cover i {
+            font-size: 40px;
+            color: var(--gray);
+        }
+        
+        .book-info {
+            padding: 10px;
+        }
+        
+        .book-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            height: 40px;
+            overflow: hidden;
+            transition: color 0.3s;
+        }
+        
+        .book-author {
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+        
+        .book-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--border);
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Profile Page Styles */
+        .profile-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            margin-bottom: 50px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: var(--light);
+            margin: 0 auto 15px;
+            border: 4px solid var(--card-bg);
+            position: relative;
+            top: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-pic i {
+            font-size: 40px;
+            color: var(--gray);
+        }
+        
+        .profile-info {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 60px 15px 15px;
+            margin-top: -40px;
+            box-shadow: 0 1px 3px var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
+        .profile-name {
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+            transition: color 0.3s;
+        }
+        
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            transition: color 0.3s;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+        
+        /* Settings Page Styles */
+        .settings-list {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px var(--shadow);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .settings-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+        
+        .settings-item:hover {
+            background-color: var(--light);
+        }
+        
+        .settings-item i {
+            font-size: 20px;
+            margin-right: 15px;
+            width: 30px;
+            text-align: center;
+            color: var(--primary);
+            transition: color 0.3s;
+        }
+        
+        .settings-item-content {
+            flex-grow: 1;
+        }
+        
+        .settings-item h4 {
+            font-size: 16px;
+            margin-bottom: 3px;
+            transition: color 0.3s;
+        }
+        
+        .settings-item p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* Upload Page Styles */
+        .upload-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 1px 3px var(--shadow);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .upload-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border: 2px dashed var(--border);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .upload-option:hover {
+            background-color: var(--light);
+            border-color: var(--primary);
+        }
+        
+        .upload-option i {
+            font-size: 40px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            transition: color 0.3s;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+            outline: none;
+        }
+        
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .upload-button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .upload-button:hover {
+            background-color: #166fe5;
+            transform: translateY(-2px);
+        }
+        
+        /* Notification Badge */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        /* Book Details Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            border: 1px solid var(--border);
+        }
+        
+        .modal-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        
+        .modal-body {
+            padding: 15px;
+        }
+        
+        .book-detail-cover {
+            width: 100%;
+            height: 200px;
+            background-color: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .book-detail-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .book-meta {
+            margin-bottom: 15px;
+        }
+        
+        .book-meta-item {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        
+        .book-meta-label {
+            font-weight: 600;
+            width: 100px;
+            color: var(--text-secondary);
+        }
+        
+        .book-meta-value {
+            flex-grow: 1;
+        }
+        
+        .book-description {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .modal-footer {
+            padding: 15px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+        
+        .btn-outline {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            margin: 20px auto;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            border: 1px solid var(--border);
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        
+        .toast i {
+            font-size: 20px;
+        }
+        
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+        
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 480px) {
+            .header {
+                padding: 10px;
+            }
+            
+            .logo {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+            
+            .search-bar {
+                margin: 0 10px;
+            }
+            
+            .search-bar input {
+                padding: 8px 15px 8px 35px;
+                font-size: 13px;
+            }
+            
+            .search-bar i {
+                left: 10px;
+                font-size: 14px;
+            }
+            
+            .header-icons i {
+                font-size: 18px;
+            }
+            
+            .quick-links {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-item span {
+                font-size: 10px;
+            }
+        }
+    </style>
 </head>
-<body class="light-mode">
-    <header>
-        <div class="logo">
-            <i class="fas fa-book-quran"></i>
-            <h1>RealBook</h1>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-container">
+            <div class="logo">RB</div>
         </div>
-        
         <div class="search-bar">
-            <input type="text" placeholder="বই খুঁজুন...">
             <i class="fas fa-search"></i>
+            <input type="text" placeholder="বই খুঁজুন..." id="searchInput">
         </div>
-        
-        <div class="header-actions">
-            <button id="darkModeToggle">
-                <i class="fas fa-moon"></i>
-            </button>
-            <button id="languageToggle">
-                <span>BN</span>
-            </button>
-            <button id="notificationBtn">
-                <i class="fas fa-bell"></i>
-                <span class="badge">3</span>
-            </button>
-            <button id="profileBtn">
-                <i class="fas fa-user"></i>
-            </button>
+        <div class="header-icons">
+            <i class="fas fa-bell" id="notificationIcon">
+                <span class="notification-badge">3</span>
+            </i>
+            <i class="fas fa-user" id="profileIcon"></i>
         </div>
-    </header>
+    </div>
 
-    <nav>
-        <button class="active" data-tab="madrasa">
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Home Page -->
+        <div class="page active" id="homePage">
+            <div class="quick-links">
+                <div class="quick-link" id="madrasaBtn">
+                    <i class="fas fa-mosque"></i>
+                    <span>মাদ্রাসা</span>
+                </div>
+                <div class="quick-link" id="schoolBtn">
+                    <i class="fas fa-school"></i>
+                    <span>স্কুল</span>
+                </div>
+                <div class="quick-link" id="audioBtn">
+                    <i class="fas fa-music"></i>
+                    <span>অডিও বই</span>
+                </div>
+                <div class="quick-link" id="islamicBtn">
+                    <i class="fas fa-quran"></i>
+                    <span>ইসলামিক</span>
+                </div>
+                <div class="quick-link" id="novelBtn">
+                    <i class="fas fa-book-open"></i>
+                    <span>উপন্যাস</span>
+                </div>
+                <div class="quick-link" id="poetryBtn">
+                    <i class="fas fa-pen-fancy"></i>
+                    <span>কবিতা</span>
+                </div>
+            </div>
+
+            <h3 class="section-title">নতুন সংযোজন</h3>
+            
+            <div class="books-grid">
+                <div class="book-card" data-book-id="1">
+                    <div class="book-cover">
+                        <img src="https://via.placeholder.com/150x200.png?text=কুরআন+তাফসীর" alt="কুরআন তাফসীর">
+                    </div>
+                    <div class="book-info">
+                        <div class="book-title">কুরআন তাফসীর</div>
+                        <div class="book-author">ইমাম ইবনে কাসীর</div>
+                        <div class="book-actions">
+                            <button class="action-btn"><i class="fas fa-download"></i> ডাউনলোড</button>
+                            <button class="action-btn"><i class="fas fa-info-circle"></i> বিস্তারিত</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="book-card" data-book-id="2">
+                    <div class="book-cover">
+                        <img src="https://via.placeholder.com/150x200.png?text=রিয়াদুস+সালিহীন" alt="রিয়াদুস সালিহীন">
+                    </div>
+                    <div class="book-info">
+                        <div class="book-title">রিয়াদুস সালিহীন</div>
+                        <div class="book-author">ইমাম নববী</div>
+                        <div class="book-actions">
+                            <button class="action-btn"><i class="fas fa-download"></i> ডাউনলোড</button>
+                            <button class="action-btn"><i class="fas fa-info-circle"></i> বিস্তারিত</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="section-title">নোটিফিকেশন</h3>
+            
+            <div class="notification">
+                <i class="fas fa-book"></i>
+                <div class="notification-content">
+                    <h4>নতুন বই সংযোজন</h4>
+                    <p>আপনার জন্য নতুন ইসলামিক বই সংযোজন করা হয়েছে</p>
+                    <small>২ ঘন্টা আগে</small>
+                </div>
+            </div>
+            
+            <div class="notification">
+                <i class="fas fa-download"></i>
+                <div class="notification-content">
+                    <h4>ডাউনলোড সম্পন্ন</h4>
+                    <p>আপনার বই ডাউনলোড সম্পন্ন হয়েছে</p>
+                    <small>গতকাল</small>
+                </div>
+            </div>
+            
+            <div class="notification">
+                <i class="fas fa-bell"></i>
+                <div class="notification-content">
+                    <h4>রিমাইন্ডার</h4>
+                    <p>আপনার ৩টি অসমাপ্ত রিডিং আছে</p>
+                    <small>২ দিন আগে</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Madrasa Page -->
+        <div class="page" id="madrasaPage">
+            <div class="category-header">
+                <i class="fas fa-mosque"></i>
+                <h2>মাদ্রাসা বই</h2>
+                <p>প্রতিষ্ঠানিক ও সাধারণ ইসলামিক শিক্ষার বই</p>
+            </div>
+            
+            <div class="books-grid">
+                <div class="book-card" data-book-id="1">
+                    <div class="book-cover">
+                        <img src="https://via.placeholder.com/150x200.png?text=কুরআন+তাফসীর" alt="কুরআন তাফসীর">
+                    </div>
+                    <div class="book-info">
+                        <div class="book-title">কুরআন তাফসীর</div>
+                        <div class="book-author">ইমাম ইবনে কাসীর</div>
+                        <div class="book-actions">
+                            <button class="action-btn"><i class="fas fa-download"></i> ডাউনলোড</button>
+                            <button class="action-btn"><i class="fas fa-info-circle"></i> বিস্তারিত</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="book-card" data-book-id="2">
+                    <div class="book-cover">
+                        <img src="https://via.placeholder.com/150x200.png?text=রিয়াদুস+সালিহীন" alt="রিয়াদুস সালিহীন">
+                    </div>
+                    <div class="book-info">
+                        <div class="book-title">রিয়াদুস সালিহীন</div>
+                        <div class="book-author">ইমাম নববী</div>
+                        <div class="book-actions">
+                            <button class="action-btn"><i class="fas fa-download"></i> ডাউনলোড</button>
+                            <button class="action-btn"><i class="fas fa-info-circle"></i> বিস্তারিত</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="book-card" data-book-id="3">
+                    <div class="book-cover">
+                        <img src="https://via.placeholder.com/150x200.png?text=ফিকহুস+সুন্নাহ" alt="ফিকহুস সুন্নাহ">
+                    </div>
+                    <div class="book-info">
+                        <div class="book-title">ফিকহুস সুন্নাহ</div>
+                        <div class="book-author">সাইয়েদ সাবিক</div>
+                        <div class="book-actions">
+                            <button class="action-btn"><i class="fas fa-download"></i> ডাউনলোড</button>
+                            <button class="action-btn"><i class="fas fa-info-circle"></i> বিস্তারিত</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="book-card" data-book-id="4">
+                    <div class="book-cover">
+                        <img src="https://via.placeholder.com/150x200.png?text=আর-রাহীকুল+মাখতূম" alt="আর-রাহীকুল মাখতূম">
+                    </div>
+                    <div class="book-info">
+                        <div class="book-title">আর-রাহীকুল মাখতূম</div>
+                        <div class="book-author">সফিউর রহমান</div>
+                        <div class="book-actions">
+                            <button class="action-btn"><i class="fas fa-download"></i> ডাউনলোড</button>
+                            <button class="action-btn"><i class="fas fa-info-circle"></i> বিস্তারিত</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="book-card" data-book-id="5">
+                    <div class="book-cover">
+                        <img src="https://via.placeholder.com/150x200.png?text=বুখারী+শরীফ" alt="বুখারী শরীফ">
+                    </div>
+                    <div class="book-info">
+                        <div class="book-title">বুখারী শরীফ</div>
+                        <div class="book-author">ইমাম বুখারী</div>
+                        <div class="book-actions">
+                            <button class="action-btn"><i class="fas fa-download"></i> ডাউনলোড</button>
+                            <button class="action-btn"><i class="fas fa-info-circle"></i> বিস্তারিত</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="book-card" data-book-id="6">
+                    <div class="book-cover">
+                        <img src="https://via.placeholder.com/150x200.png?text=মুসলিম+শরীফ" alt="মুসলিম শরীফ">
+                    </div>
+                    <div class="book-info">
+                        <div class="book-title">মুসলিম শরীফ</div>
+                        <div class="book-author">ইমাম মুসলিম</div>
+                        <div class="book-actions">
+                            <button class="action-btn"><i class="fas fa-download"></i> ডাউনলোড</button>
+                            <button class="action-btn"><i class="fas fa-info-circle"></i> বিস্তারিত</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div class="page" id="profilePage">
+            <div class="profile-header">
+                <div class="profile-pic">
+                    <img src="https://via.placeholder.com/100x100.png?text=User" alt="Profile Picture">
+                </div>
+            </div>
+            
+            <div class="profile-info">
+                <div class="profile-name">মোঃ আউলাদ হোসেন</div>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 15px;">গ্রন্থাগারিক</p>
+                
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">42</div>
+                        <div class="stat-label">বই</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">128</div>
+                        <div class="stat-label">অডিও</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">18</div>
+                        <div class="stat-label">আপলোড</div>
+                    </div>
+                </div>
+                
+                <div class="section-title">ব্যক্তিগত তথ্য</div>
+                <div class="settings-list">
+                    <div class="settings-item">
+                        <i class="fas fa-envelope"></i>
+                        <div class="settings-item-content">
+                            <h4>ইমেইল</h4>
+                            <p>mdaulad@example.com</p>
+                        </div>
+                    </div>
+                    <div class="settings-item">
+                        <i class="fas fa-phone"></i>
+                        <div class="settings-item-content">
+                            <h4>ফোন</h4>
+                            <p>+880 1234 567890</p>
+                        </div>
+                    </div>
+                    <div class="settings-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div class="settings-item-content">
+                            <h4>ঠিকানা</h4>
+                            <p>মিরপুর, ঢাকা, বাংলাদেশ</p>
+                        </div>
+                    </div>
+                    <div class="settings-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div class="settings-item-content">
+                            <h4>সদস্য sejak</h4>
+                            <p>জানুয়ারি ২০২৩</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-title">অ্যাক্টিভিটি</div>
+                <div class="settings-list">
+                    <div class="settings-item">
+                        <i class="fas fa-history"></i>
+                        <div class="settings-item-content">
+                            <h4>সাম্প্রতিক কার্যকলাপ</h4>
+                            <p>৫টি বই দেখা হয়েছে গত সপ্তাহে</p>
+                        </div>
+                    </div>
+                    <div class="settings-item">
+                        <i class="fas fa-bookmark"></i>
+                        <div class="settings-item-content">
+                            <h4>বুকমার্ক</h4>
+                            <p>১২টি বই বুকমার্ক করা আছে</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div class="page" id="settingsPage">
+            <h3 class="section-title">সেটিংস</h3>
+            
+            <div class="settings-list">
+                <div class="settings-item">
+                    <i class="fas fa-moon"></i>
+                    <div class="settings-item-content">
+                        <h4>ডার্ক মোড</h4>
+                        <p>ইন্টারফেস ডার্ক থিমে পরিবর্তন করুন</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="settings-item">
+                    <i class="fas fa-language"></i>
+                    <div class="settings-item-content">
+                        <h4>ভাষা পরিবর্তন</h4>
+                        <p>ইংরেজি/বাংলা ভাষা নির্বাচন করুন</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="settings-item">
+                    <i class="fas fa-bell"></i>
+                    <div class="settings-item-content">
+                        <h4>নোটিফিকেশন</h4>
+                        <p>নোটিফিকেশন সেটিংস ম্যানেজ করুন</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            
+            <h3 class="section-title">অ্যাকাউন্ট</h3>
+            <div class="settings-list">
+                <div class="settings-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <div class="settings-item-content">
+                        <h4>গোপনীয়তা</h4>
+                        <p>আপনার তথ্যের গোপনীয়তা ম্যানেজ করুন</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="settings-item">
+                    <i class="fas fa-lock"></i>
+                    <div class="settings-item-content">
+                        <h4>পাসওয়ার্ড পরিবর্তন</h4>
+                        <p>আপনার অ্যাকাউন্ট পাসওয়ার্ড আপডেট করুন</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            
+            <h3 class="section-title">সহায়তা</h3>
+            <div class="settings-list">
+                <div class="settings-item">
+                    <i class="fas fa-question-circle"></i>
+                    <div class="settings-item-content">
+                        <h4>সহায়তা কেন্দ্র</h4>
+                        <p>সহায়তা এবং প্রশ্নোত্তর</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="settings-item">
+                    <i class="fas fa-info-circle"></i>
+                    <div class="settings-item-content">
+                        <h4>আমাদের সম্পর্কে</h4>
+                        <p>RealBook লাইব্রেরি সম্পর্কে জানুন</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="settings-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <div class="settings-item-content">
+                        <h4>লগ আউট</h4>
+                        <p>আপনার অ্যাকাউন্ট থেকে সাইন আউট করুন</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Page -->
+        <div class="page" id="uploadPage">
+            <h3 class="section-title">বই আপলোড</h3>
+            
+            <div class="upload-container">
+                <div class="upload-option" id="uploadPdf">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>PDF বই আপলোড করুন</span>
+                    <small>সর্বোচ্চ 20MB</small>
+                </div>
+                
+                <div class="upload-option" id="uploadAudio">
+                    <i class="fas fa-file-audio"></i>
+                    <span>অডিও বই আপলোড করুন</span>
+                    <small>সর্বোচ্চ 50MB</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bookTitle">বইয়ের নাম</label>
+                    <input type="text" id="bookTitle" placeholder="বইয়ের নাম লিখুন">
+                </div>
+                
+                <div class="form-group">
+                    <label for="bookAuthor">লেখক</label>
+                    <input type="text" id="bookAuthor" placeholder="লেখকের নাম লিখুন">
+                </div>
+                
+                <div class="form-group">
+                    <label for="bookCategory">বিষয়শ্রেণী</label>
+                    <select id="bookCategory">
+                        <option value="">বিষয়শ্রেণী নির্বাচন করুন</option>
+                        <option value="madrasa">মাদ্রাসা</option>
+                        <option value="school">স্কুল</option>
+                        <option value="islamic">ইসলামিক</option>
+                        <option value="audio">অডিও বই</option>
+                        <option value="novel">উপন্যাস</option>
+                        <option value="poetry">কবিতা</option>
+                        <option value="biography">জীবনী</option>
+                        <option value="history">ইতিহাস</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bookLanguage">ভাষা</label>
+                    <select id="bookLanguage">
+                        <option value="bengali">বাংলা</option>
+                        <option value="english">ইংরেজি</option>
+                        <option value="arabic">আরবি</option>
+                        <option value="urdu">উর্দু</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bookDescription">বিবরণ</label>
+                    <textarea id="bookDescription" placeholder="বইয়ের সংক্ষিপ্ত বিবরণ লিখুন"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bookTags">ট্যাগস</label>
+                    <input type="text" id="bookTags" placeholder="কমা দ্বারা পৃথক ট্যাগস লিখুন (উদাহরণ: ইসলাম, হাদিস, ফিকহ)">
+                </div>
+                
+                <div class="spinner" id="uploadSpinner"></div>
+                
+                <button class="upload-button" id="uploadBtn">আপলোড করুন</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Book Details Modal -->
+    <div class="modal" id="bookModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">বইয়ের বিবরণ</div>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="book-detail-cover">
+                    <img src="https://via.placeholder.com/300x400.png?text=Book+Cover" alt="Book Cover" id="modalBookCover">
+                </div>
+                
+                <h3 id="modalBookTitle">কুরআন তাফসীর</h3>
+                <p id="modalBookAuthor">ইমাম ইবনে কাসীর</p>
+                
+                <div class="book-meta">
+                    <div class="book-meta-item">
+                        <div class="book-meta-label">বিষয়শ্রেণী:</div>
+                        <div class="book-meta-value" id="modalBookCategory">ইসলামিক</div>
+                    </div>
+                    <div class="book-meta-item">
+                        <div class="book-meta-label">ভাষা:</div>
+                        <div class="book-meta-value" id="modalBookLanguage">বাংলা</div>
+                    </div>
+                    <div class="book-meta-item">
+                        <div class="book-meta-label">পৃষ্ঠা:</div>
+                        <div class="book-meta-value" id="modalBookPages">450</div>
+                    </div>
+                    <div class="book-meta-item">
+                        <div class="book-meta-label">আপলোড তারিখ:</div>
+                        <div class="book-meta-value" id="modalBookDate">১৫ মার্চ ২০২৩</div>
+                    </div>
+                    <div class="book-meta-item">
+                        <div class="book-meta-label">ডাউনলোড:</div>
+                        <div class="book-meta-value" id="modalBookDownloads">1,245</div>
+                    </div>
+                </div>
+                
+                <div class="book-description">
+                    <h4>বিবরণ</h4>
+                    <p id="modalBookDescription">এই বইটিতে কুরআনের বিস্তারিত তাফসীর রয়েছে। ইমাম ইবনে কাসীর রহ. তার অমর গ্রন্থে কুরআনের আয়াতসমূহের ব্যাখ্যা প্রদান করেছেন হাদিস, সাহাবা ও তাবেঈনের বর্ণনার আলোকে। এটি ইসলামিক জ্ঞানের একটি মৌলিক গ্রন্থ হিসেবে বিবেচিত।</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline close-modal">বন্ধ করুন</button>
+                <button class="btn btn-primary" id="modalDownloadBtn"><i class="fas fa-download"></i> ডাউনলোড</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toastNotification">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">অপারেশন সফলভাবে সম্পন্ন হয়েছে</span>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="nav">
+        <div class="nav-item active" data-page="homePage">
+            <i class="fas fa-home"></i>
+            <span>হোম</span>
+        </div>
+        <div class="nav-item" data-page="madrasaPage" id="madrasaNav">
             <i class="fas fa-mosque"></i>
             <span>মাদ্রাসা</span>
-        </button>
-        <button data-tab="school">
-            <i class="fas fa-school"></i>
-            <span>স্কুল</span>
-        </button>
-        <button data-tab="audio">
-            <i class="fas fa-headphones"></i>
-            <span>অডিও</span>
-        </button>
-    </nav>
-
-    <main>
-        <section id="madrasa" class="tab-content active">
-            <h2>মাদ্রাসা বইসমূহ</h2>
-            <div class="books-grid" id="madrasaBooks">
-                <!-- Firebase থেকে বই লোড হবে -->
-            </div>
-        </section>
-
-        <section id="school" class="tab-content">
-            <h2>স্কুল বইসমূহ</h2>
-            <div class="books-grid" id="schoolBooks">
-                <!-- Firebase থেকে বই লোড হবে -->
-            </div>
-        </section>
-
-        <section id="audio" class="tab-content">
-            <h2>অডিও বইসমূহ</h2>
-            <div class="books-grid" id="audioBooks">
-                <!-- Firebase থেকে বই লোড হবে -->
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <button id="uploadBtn">
+        </div>
+        <div class="nav-item" data-page="uploadPage">
             <i class="fas fa-plus-circle"></i>
-        </button>
-    </footer>
+            <span>আপলোড</span>
+        </div>
+        <div class="nav-item" data-page="profilePage">
+            <i class="fas fa-user"></i>
+            <span>প্রোফাইল</span>
+        </div>
+        <div class="nav-item" data-page="settingsPage">
+            <i class="fas fa-cog"></i>
+            <span>সেটিংস</span>
+        </div>
+    </div>
+
+    <script>
+        // Navigation functionality
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all nav items
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                
+                // Add active class to clicked nav item
+                this.classList.add('active');
+                
+                // Hide all pages
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // Show selected page
+                const pageId = this.getAttribute('data-page');
+                document.getElementById(pageId).classList.add('active');
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            });
+        });
+        
+        // Quick links functionality
+        document.getElementById('madrasaBtn').addEventListener('click', function() {
+            navigateToPage('madrasaPage', 'madrasaNav');
+        });
+        
+        document.getElementById('schoolBtn').addEventListener('click', function() {
+            showToast('স্কুল বিভাগ শীঘ্রই আসছে!', 'info');
+        });
+        
+        document.getElementById('audioBtn').addEventListener('click', function() {
+            showToast('অডিও বই বিভাগ শীঘ্রই আসছে!', 'info');
+        });
+        
+        document.getElementById('islamicBtn').addEventListener('click', function() {
+            showToast('ইসলামিক বই বিভাগ শীঘ্রই আসছে!', 'info');
+        });
+        
+        document.getElementById('novelBtn').addEventListener('click', function() {
+            showToast('উপন্যাস বিভাগ শীঘ্রই আসছে!', 'info');
+        });
+        
+        document.getElementById('poetryBtn').addEventListener('click', function() {
+            showToast('কবিতা বিভাগ শীঘ্রই আসছে!', 'info');
+        });
+        
+        function navigateToPage(pageId, navId) {
+            document.querySelectorAll('.nav-item').forEach(nav => {
+                nav.classList.remove('active');
+            });
+            
+            document.getElementById(navId).classList.add('active');
+            
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+        
+        // Profile icon functionality
+        document.getElementById('profileIcon').addEventListener('click', function() {
+            navigateToPage('profilePage', 'profileNav');
+        });
+        
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('change', function() {
+            document.body.classList.toggle('dark-mode');
+            
+            // Save preference to localStorage
+            if(this.checked) {
+                localStorage.setItem('darkMode', 'enabled');
+                showToast('ডার্ক মোড সক্রিয় করা হয়েছে', 'success');
+            } else {
+                localStorage.setItem('darkMode', 'disabled');
+                showToast('ডার্ক মোড নিষ্ক্রিয় করা হয়েছে', 'success');
+            }
+        });
+        
+        // Check for saved dark mode preference
+        if(localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+            darkModeToggle.checked = true;
+        }
+        
+        // Notification icon functionality
+        document.getElementById('notificationIcon').addEventListener('click', function() {
+            showToast('আপনার ৩টি নতুন নোটিফিকেশন আছে', 'info');
+        });
+        
+        // Book details modal functionality
+        document.querySelectorAll('.book-card .action-btn:nth-child(2)').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const bookCard = this.closest('.book-card');
+                const bookId = bookCard.getAttribute('data-book-id');
+                
+                // In a real app, we would fetch book details from an API
+                // For demo, we'll use mock data based on the book ID
+                const bookData = getBookData(bookId);
+                
+                // Populate modal with book data
+                document.getElementById('modalBookTitle').textContent = bookData.title;
+                document.getElementById('modalBookAuthor').textContent = bookData.author;
+                document.getElementById('modalBookCategory').textContent = bookData.category;
+                document.getElementById('modalBookLanguage').textContent = bookData.language;
+                document.getElementById('modalBookPages').textContent = bookData.pages;
+                document.getElementById('modalBookDate').textContent = bookData.uploadDate;
+                document.getElementById('modalBookDownloads').textContent = bookData.downloads;
+                document.getElementById('modalBookDescription').textContent = bookData.description;
+                document.getElementById('modalBookCover').src = bookData.coverImage;
+                
+                // Set download button to download this book
+                document.getElementById('modalDownloadBtn').onclick = function() {
+                    showToast(`"${bookData.title}" ডাউনলোড শুরু হচ্ছে...`, 'success');
+                    setTimeout(() => {
+                        document.getElementById('bookModal').style.display = 'none';
+                    }, 2000);
+                };
+                
+                // Show modal
+                document.getElementById('bookModal').style.display = 'flex';
+            });
+        });
+        
+        // Close modal when clicking close button or outside
+        document.querySelectorAll('.close-modal, .modal').forEach(el => {
+            el.addEventListener('click', function(e) {
+                if(e.target === this || e.target.classList.contains('close-modal')) {
+                    document.getElementById('bookModal').style.display = 'none';
+                }
+            });
+        });
+        
+        // Upload page functionality
+        document.getElementById('uploadPdf').addEventListener('click', function() {
+            showToast('PDF আপলোড অপশন নির্বাচন করা হয়েছে', 'info');
+        });
+        
+        document.getElementById('uploadAudio').addEventListener('click', function() {
+            showToast('অডিও আপলোড অপশন নির্বাচন করা হয়েছে', 'info');
+        });
+        
+        document.getElementById('uploadBtn').addEventListener('click', function() {
+            const title = document.getElementById('bookTitle').value;
+            const category = document.getElementById('bookCategory').value;
+            
+            if(!title || !category) {
+                showToast('দয়া করে বইয়ের নাম এবং বিষয়শ্রেণী পূরণ করুন', 'error');
+                return;
+            }
+            
+            // Show loading spinner
+            document.getElementById('uploadSpinner').style.display = 'block';
+            this.disabled = true;
+            this.textContent = 'আপলোড হচ্ছে...';
+            
+            // Simulate upload delay
+            setTimeout(() => {
+                document.getElementById('uploadSpinner').style.display = 'none';
+                this.disabled = false;
+                this.textContent = 'আপলোড করুন';
+                
+                showToast(`"${title}" সফলভাবে আপলোড করা হয়েছে`, 'success');
+                
+                // Reset form
+                document.getElementById('bookTitle').value = '';
+                document.getElementById('bookAuthor').value = '';
+                document.getElementById('bookCategory').value = '';
+                document.getElementById('bookDescription').value = '';
+                document.getElementById('bookTags').value = '';
+            }, 3000);
+        });
+        
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            if(e.key === 'Enter') {
+                const query = this.value.trim();
+                if(query.length > 0) {
+                    showToast(`"${query}" এর জন্য অনুসন্ধান করা হচ্ছে...`, 'info');
+                }
+            }
+        });
+        
+        // Toast notification function
+        function showToast(message, type) {
+            const toast = document.getElementById('toastNotification');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toast.className = 'toast';
+            toast.classList.add(type);
+            toastMessage.textContent = message;
+            
+            // Set appropriate icon
+            const icon = toast.querySelector('i');
+            if(type === 'success') {
+                icon.className = 'fas fa-check-circle';
+            } else if(type === 'error') {
+                icon.className = 'fas fa-exclamation-circle';
+            } else {
+                icon.className = 'fas fa-info-circle';
+            }
+            
+            toast.classList.add('show');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Mock book data function
+        function getBookData(bookId) {
+            const books = {
+                '1': {
+                    title: 'কুরআন তাফসীর',
+                    author: 'ইমাম ইবনে কাসীর',
+                    category: 'ইসলামিক',
+                    language: 'বাংলা',
+                    pages: '450',
+                    uploadDate: '১৫ মার্চ ২০২৩',
+                    downloads: '1,245',
+                    description: 'এই বইটিতে কুরআনের বিস্তারিত তাফসীর রয়েছে। ইমাম ইবনে কাসীর রহ. তার অমর গ্রন্থে কুরআনের আয়াতসমূহের ব্যাখ্যা প্রদান করেছেন হাদিস, সাহাবা ও তাবেঈনের বর্ণনার আলোকে। এটি ইসলামিক জ্ঞানের একটি মৌলিক গ্রন্থ হিসেবে বিবেচিত।',
+                    coverImage: 'https://via.placeholder.com/300x400.png?text=কুরআন+তাফসীর'
+                },
+                '2': {
+                    title: 'রিয়াদুস সালিহীন',
+                    author: 'ইমাম নববী',
+                    category: 'ইসলামিক',
+                    language: 'বাংলা',
+                    pages: '320',
+                    uploadDate: '১০ ফেব্রুয়ারি ২০২৩',
+                    downloads: '980',
+                    description: 'রিয়াদুস সালিহীন হাদিসের একটি বিখ্যাত সংকলন গ্রন্থ। ইমাম নববী রহ. এতে নৈতিকতা, আদব-কায়দা, ইবাদত ও সমাজ জীবনের বিভিন্ন দিক নিয়ে হাদিস সংকলন করেছেন। প্রতিটি মুসলিমের জন্য এটি একটি অবশ্যপাঠ্য গ্রন্থ।',
+                    coverImage: 'https://via.placeholder.com/300x400.png?text=রিয়াদুস+সালিহীন'
+                },
+                '3': {
+                    title: 'ফিকহুস সুন্নাহ',
+                    author: 'সাইয়েদ সাবিক',
+                    category: 'ইসলামিক',
+                    language: 'বাংলা',
+                    pages: '600',
+                    uploadDate: '৫ এপ্রিল ২০২৩',
+                    downloads: '750',
+                    description: 'ফিকহুস সুন্নাহ ইসলামিক আইনশাস্ত্রের একটি প্রসিদ্ধ গ্রন্থ। লেখক এতে কুরআন ও সহীহ হাদিসের আলোকে ইসলামের বিধি-বিধানগুলো সহজ-সরলভাবে উপস্থাপন করেছেন। ফিকহ শাস্ত্রে আগ্রহী প্রত্যেকের জন্য এটি একটি গুরুত্বপূর্ণ রেফারেন্স বই।',
+                    coverImage: 'https://via.placeholder.com/300x400.png?text=ফিকহুস+সুন্নাহ'
+                },
+                '4': {
+                    title: 'আর-রাহীকুল মাখতূম',
+                    author: 'সফিউর রহমান',
+                    category: 'ইসলামিক',
+                    language: 'বাংলা',
+                    pages: '280',
+                    uploadDate: '২০ জানুয়ারি ২০২৩',
+                    downloads: '1,500',
+                    description: 'আর-রাহীকুল মাখতূম নবী মুহাম্মাদ (সা.)-এর জীবনীর উপর রচিত একটি প্রামাণ্য গ্রন্থ। লেখক সহীহ হাদিস ও ঐতিহাসিক দলিল-প্রমাণের আলোকে রাসূল (সা.)-এর সমগ্র জীবনচরিত অত্যন্ত সুন্দরভাবে উপস্থাপন করেছেন। সীরাত গ্রন্থ হিসেবে এটি বিশ্বব্যাপী সমাদৃত।',
+                    coverImage: 'https://via.placeholder.com/300x400.png?text=আর-রাহীকুল+মাখতূম'
+                },
+                '5': {
+                    title: 'বুখারী শরীফ',
+                    author: 'ইমাম বুখারী',
+                    category: 'হাদিস',
+                    language: 'বাংলা',
+                    pages: '1200',
+                    uploadDate: '১২ মার্চ ২০২৩',
+                    downloads: '2,300',
+                    description: 'সহীহ আল-বুখারী হল হাদীসের সবচেয়ে প্রসিদ্ধ সংকলন গ্রন্থ। ইমাম বুখারী (রহ.) তার এই গ্রন্থে রাসূলুল্লাহ (সা.)-এর সহীহ হাদীসগুলো সুবিন্যস্তভাবে সংকলন করেছেন। ইসলামী জ্ঞানের ক্ষেত্রে এটি সবচেয়ে নির্ভরযোগ্য হাদীস গ্রন্থ হিসেবে স্বীকৃত।',
+                    coverImage: 'https://via.placeholder.com/300x400.png?text=বুখারী+শরীফ'
+                },
+                '6': {
+                    title: 'মুসলিম শরীফ',
+                    author: 'ইমাম মুসলিম',
+                    category: 'হাদিস',
+                    language: 'বাংলা',
+                    pages: '1100',
+                    uploadDate: '৮ ফেব্রুয়ারি ২০২৩',
+                    downloads: '1,800',
+                    description: 'সহীহ মুসলিম হল হাদীসের দ্বিতীয় সর্বাধিক প্রসিদ্ধ সংকলন গ্রন্থ। ইমাম মুসলিম (রহ.) তার এই গ্রন্থে সহীহ সনদে বর্ণিত হাদীসগুলো সুন্দরভাবে বিন্যস্ত করেছেন। সহীহ আল-বুখারীর পর হাদীসের ক্ষেত্রে এটি সবচেয়ে নির্ভরযোগ্য গ্রন্থ হিসেবে বিবেচিত।',
+                    coverImage: 'https://via.placeholder.com/300x400.png?text=মুসলিম+শরীফ'
+                }
+            };
+            
+            return books[bookId] || books['1'];
+        }
+    </script>
 </body>
-      </html>
+    </html>
